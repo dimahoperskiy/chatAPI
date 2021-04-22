@@ -20,7 +20,7 @@ public class ChatRoomService {
                     if(!createIfNotExist) {
                         return  Optional.empty();
                     }
-                    var chatId =
+                    String chatId =
                             String.format("%s_%s", senderId, recipientId);
 
                     ChatRoom senderRecipient = ChatRoom

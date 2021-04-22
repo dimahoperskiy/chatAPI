@@ -33,8 +33,8 @@ public class ChatMessageService {
     }
 
     public List<ChatMessage> findChatMessages(String senderId, String recipientId) {
-        var chatId = chatRoomService.getChatId(senderId, recipientId, false);
-        var messages = chatId.map(cId ->
+        Optional<String> chatId = chatRoomService.getChatId(senderId, recipientId, false);
+        List<ChatMessage> messages = chatId.map(cId ->
                 chatMessageRepository.findByChatIdOrderByTimestamp(cId)).orElse(new ArrayList<>());
 
         if(messages.size() > 0) {
