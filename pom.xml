@@ -14,7 +14,7 @@
     <name>saturn</name>
     <description>Chat API</description>
     <properties>
-        <java.version>10</java.version>
+        <java.version>11</java.version>
     </properties>
     <dependencies>
         <dependency>

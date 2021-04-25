@@ -23,7 +23,7 @@ public class SaturnApplication {
                 registry.addMapping("/**")
 //                        .allowedOrigins("http://192.168.1.67:3000", "http://localhost:3000")
                         .allowCredentials(true)
-                        .allowedOrigins("http://dimahoperskiy.ru")
+                        .allowedOrigins("https://dimahoperskiy.ru")
                         .allowedHeaders("*");
             }
         };
