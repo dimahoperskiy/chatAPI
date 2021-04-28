@@ -1,5 +1,8 @@
 package com.saturn.controllers;
 
+/**
+ * @deprecated
+ */
 class Follow {
     public Follow() {
     }

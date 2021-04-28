@@ -17,6 +17,9 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+/**
+ * Контроллер для авторизации
+ */
 @CrossOrigin
 @RestController
 public class AuthController {
@@ -25,9 +28,16 @@ public class AuthController {
     @Autowired
     private JwtProvider jwtProvider;
 
+    /**
+     * Регистрация
+     * Создается токен в куки
+     * @param registrationRequest Запрос
+     * @param response Ответ
+     * @return Пользователь зарегестрирован
+     */
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody @Valid RegistrationRequest registrationRequest,
-                               HttpServletResponse response) throws Exception {
+                               HttpServletResponse response) {
         User u = new User();
         u.setPassword(registrationRequest.getPassword());
         u.setLogin(registrationRequest.getLogin());
@@ -49,6 +59,13 @@ public class AuthController {
         return ResponseEntity.ok().body("User registered");
     }
 
+    /**
+     * Авторизация
+     * Создается токен в куки
+     * @param request Запрос
+     * @param response Ответ
+     * @return Данные запроса
+     */
     @PostMapping("/login")
     public ResponseEntity<?> auth(@RequestBody AuthRequest request, HttpServletResponse response) {
         try {
@@ -71,6 +88,12 @@ public class AuthController {
 
     }
 
+    /**
+     * Выход
+     * Удаляется куки
+     * @param response Ответ
+     * @return Вы вышли
+     */
     @GetMapping("/exit")
     public ResponseEntity<String> exit(HttpServletResponse response) {
         Cookie deleteServletCookie = new Cookie("auth", null);

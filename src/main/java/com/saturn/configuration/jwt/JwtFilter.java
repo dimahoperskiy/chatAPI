@@ -21,6 +21,9 @@ import java.util.Arrays;
 
 import static org.springframework.util.StringUtils.hasText;
 
+/**
+ * Класс для фильтрации токенп
+ */
 @Component
 @Log
 public class JwtFilter extends GenericFilterBean {
@@ -33,6 +36,15 @@ public class JwtFilter extends GenericFilterBean {
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
 
+
+    /**
+     * Фильтрация токена
+     * @param servletRequest Запрос
+     * @param servletResponse Ответ
+     * @param filterChain Цепь фильтрации
+     * @throws IOException Ошибка
+     * @throws ServletException Ошибка
+     */
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         String token = getTokenFromRequest((HttpServletRequest) servletRequest);
@@ -45,6 +57,11 @@ public class JwtFilter extends GenericFilterBean {
         filterChain.doFilter(servletRequest, servletResponse);
     }
 
+    /**
+     * Достаем токен из куки
+     * @param request Запрос
+     * @return Токен
+     */
     private String getTokenFromRequest(HttpServletRequest request) {
         Cookie cookie = WebUtils.getCookie(request, "auth");
         if (cookie != null) {

@@ -11,6 +11,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+/**
+ * Сервис пользователя
+ */
 @Service
 public class UserService {
 
@@ -21,6 +24,13 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    /**
+     * Метод для сохранения пользователя
+     * Проверяет есть ли пользователь с таким логином и емейлом
+     * @throws UsernameAlreadyExistsException Логин занят
+     * @throws EmailAlreadyExistsException Емейл занят
+     * @param user Пользовтель
+     */
     public void saveUser(User user) {
         Role userRole = roleRepository.findByName("ROLE_USER");
         if (userRepository.existsByLogin(user.getLogin())) {
@@ -34,10 +44,24 @@ public class UserService {
         userRepository.save(user);
     }
 
+    /**
+     * Метод для поиска пользователя по логину
+     * @param login Логин
+     * @return Пользователь
+     */
     public User findByLogin(String login) {
         return userRepository.findByLogin(login);
     }
 
+    /**
+     * Метод для поиска пользователя по логину и паролю
+     * Внутри с помощью PasswordEncoder проверяет на соотвествие введенного пароля
+     * с захешированным паролем из БД
+     * @param login Логин
+     * @param password Пароль
+     * @throws UsernameNotFoundException Пользователь не найден
+     * @return Пользователь
+     */
     public User findByLoginAndPassword(String login, String password) {
         User user = findByLogin(login);
         if (user != null) {
@@ -46,7 +70,6 @@ public class UserService {
             }
         } else {
             throw new UsernameNotFoundException("User " + login + " not found");
-//            throw new Exception("User " + login + " not found");
         }
         return null;
     }

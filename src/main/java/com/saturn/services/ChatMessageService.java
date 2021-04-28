@@ -16,22 +16,39 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Сервис сообщений
+ */
 @Service
 public class ChatMessageService {
     @Autowired private ChatMessageRepository chatMessageRepository;
     @Autowired private ChatRoomService chatRoomService;
 
+    /**
+     * Метод для сохранения сообщения в БД
+     * @param chatMessage Сообщение
+     * @return Сообщение
+     */
     public ChatMessage save(ChatMessage chatMessage) {
         chatMessage.setStatus(MessageStatus.RECEIVED);
         chatMessageRepository.save(chatMessage);
         return chatMessage;
     }
 
+    /**
+     * @deprecated
+     */
     public long countNewMessages(String senderId, String recipientId) {
         return chatMessageRepository.countBySenderIdAndRecipientIdAndStatus(
                 senderId, recipientId, MessageStatus.RECEIVED);
     }
 
+    /**
+     * Метод для возврата всех сообщений из чат-комнаты
+     * @param senderId Айди отправителя
+     * @param recipientId Айди получаетеля
+     * @return Список сообщениц
+     */
     public List<ChatMessage> findChatMessages(String senderId, String recipientId) {
         Optional<String> chatId = chatRoomService.getChatId(senderId, recipientId, false);
         List<ChatMessage> messages = chatId.map(cId ->
@@ -43,6 +60,11 @@ public class ChatMessageService {
         return messages;
     }
 
+    /**
+     * Метод для поиска сообщения по айди
+     * @param id Айди сообщения
+     * @return Сообщение
+     */
     public ChatMessage findById(Long id) {
         return chatMessageRepository
                 .findById(id)
@@ -53,11 +75,18 @@ public class ChatMessageService {
                 .orElseThrow();
     }
 
+    /**
+     * Метод для удаления сообщения
+     * @param id Айди сообщения
+     */
     public void deleteMessage(Long id) {
         ChatMessage message = chatMessageRepository.findById(id).orElseThrow();
         chatMessageRepository.delete(message);
     }
 
+    /**
+     * @deprecated
+     */
     public void updateStatuses(String senderId, String recipientId, MessageStatus status) {
         Optional<String> chatId = chatRoomService.getChatId(senderId, recipientId, false);
         List<ChatMessage> messages = chatMessageRepository.findByChatIdOrderByTimestamp(chatId.toString());

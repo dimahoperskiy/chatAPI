@@ -13,10 +13,18 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 
 import java.util.List;
 
+/**
+ * Конфигурация для сокетов
+ */
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
+    /**
+     * Назаначаем брокера сообещений,
+     * задаем пути
+     * @param config Конфиг
+     */
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
         config.enableSimpleBroker( "/user");
@@ -24,11 +32,16 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         config.setUserDestinationPrefix("/user");
     }
 
+    /**
+     * Добавляем эндпоинт для сокетов,
+     * разрешаем подключаться нашему клиенту
+     * @param registry Вход
+     */
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry
                 .addEndpoint("/ws")
-                .setAllowedOrigins("https://dimahoperskiy.ru", "http://10.38.201.159")
+                .setAllowedOrigins("https://dimahoperskiy.ru")
                 .withSockJS();
     }
 

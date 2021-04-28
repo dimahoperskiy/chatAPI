@@ -7,11 +7,23 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+/**
+ * Сервис чат-комнаты
+ */
 @Service
 public class ChatRoomService {
 
     @Autowired private ChatRoomRepository chatRoomRepository;
 
+    /**
+     * Метод для возврата айдишника чат-комнаты по
+     * айди отправителя и получателя.
+     * Если поменять их местами, номер комнаты будет таким же
+     * @param senderId Айди отправителя
+     * @param recipientId Айди получателя
+     * @param createIfNotExist Создать если отсутствует
+     * @return
+     */
     public Optional<String> getChatId(String senderId, String recipientId, boolean createIfNotExist) {
         return chatRoomRepository
                 .findBySenderIdAndRecipientId(senderId, recipientId)

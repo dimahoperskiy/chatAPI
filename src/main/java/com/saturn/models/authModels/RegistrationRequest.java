@@ -4,7 +4,9 @@ import lombok.Data;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
-
+/**
+ * Запрос на регистрацию
+ */
 @Data
 public class RegistrationRequest {
     @NotEmpty

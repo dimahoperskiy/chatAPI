@@ -13,6 +13,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 
+/**
+ * Конфигурация для Spring Security
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -21,6 +24,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private JwtFilter jwtFilter;
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
+
+    /**
+     * Конфигурация
+     * @param http Запрос
+     * @throws Exception Ошибка
+     */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and()

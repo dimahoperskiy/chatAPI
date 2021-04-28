@@ -3,6 +3,9 @@ package com.saturn.controllers;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * @deprecated
+ */
 @RestController
 public class TestSecurityController {
 
