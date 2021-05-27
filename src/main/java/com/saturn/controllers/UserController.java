@@ -53,17 +53,6 @@ public class UserController {
     public User findByLogin(@PathVariable(name = "login") String login) {
         return userRepository.findByLogin(login);
     }
-
-    /**
-     * Создать пользователя
-     * @param user Пользователь
-     * @return Пользователь
-     */
-    @PostMapping
-    public User createUser(@RequestBody User user) {
-        return userRepository.save(user);
-    }
-
     /**
      * @deprecated
      */
