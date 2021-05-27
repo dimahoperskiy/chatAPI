@@ -7,9 +7,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
-/**
- * @deprecated
- */
 @Component
 public class CustomUserDetailsService implements UserDetailsService {
     @Autowired

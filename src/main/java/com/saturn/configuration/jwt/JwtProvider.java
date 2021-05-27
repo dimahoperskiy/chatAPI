@@ -11,9 +11,6 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 
-/**
- * Класс для сооздания и валидации JWT токена авторизации
- */
 @Component
 @Log
 public class JwtProvider {
@@ -21,11 +18,6 @@ public class JwtProvider {
     @Value("$(saturn.app.jwtSecret)")
     private String jwtSecret;
 
-    /**
-     * Генерация токена
-     * @param login Логин
-     * @return Токен
-     */
     public String generateToken(String login) {
         Date date = Date.from(LocalDate.now().plusDays(15).atStartOfDay(ZoneId.systemDefault()).toInstant());
         return Jwts.builder()
@@ -35,11 +27,6 @@ public class JwtProvider {
                 .compact();
     }
 
-    /**
-     * Валидация токена
-     * @param token Токен
-     * @return Верный или нет
-     */
     public boolean validateToken(String token) {
         try {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
@@ -50,11 +37,6 @@ public class JwtProvider {
         return false;
     }
 
-    /**
-     * Достем логина из токена
-     * @param token Токен
-     * @return Логин
-     */
     public String getLoginFromToken(String token) {
         Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
         return claims.getSubject();

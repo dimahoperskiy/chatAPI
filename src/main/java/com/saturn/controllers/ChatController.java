@@ -22,9 +22,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.Optional;
 
-/**
- * Котроллер для сообщений
- */
 @Controller
 @CrossOrigin
 public class ChatController {
@@ -35,11 +32,6 @@ public class ChatController {
     @Autowired private UserService userService;
     @Autowired private JwtProvider jwtProvider;
 
-    /**
-     * Сокет запрос для обработки сообщения.
-     * Отправлет сообщение оправителю и получателю
-     * @param chatMessage Сообщение
-     */
     @MessageMapping("/chat")
     public void processMessage(@Payload ChatMessage chatMessage) {
         Optional<String> chatId = chatRoomService
@@ -65,10 +57,6 @@ public class ChatController {
                         false));
     }
 
-    /**
-     * Сокет запрос для удаления сообщения
-     * @param payload Тело запроса
-     */
     @MessageMapping("/chat/delete")
     public void deleteMessage(@Payload DeleteMessage payload) {
         ChatMessage message = chatMessageService.findById(payload.getId());
@@ -87,10 +75,6 @@ public class ChatController {
         );
     }
 
-    /**
-     * Сокет зарпос для редактирования сообщения
-     * @param payload Тело запроса
-     */
     @MessageMapping("/chat/edit")
     public void editMessage(@Payload EditMessage payload) {
 
@@ -110,9 +94,6 @@ public class ChatController {
 
     }
 
-    /**
-     * @deprecated
-     */
     @GetMapping("/messages/{senderId}/{recipientId}/count")
     public ResponseEntity<Long> countNewMessages(
             @PathVariable String senderId,
@@ -122,12 +103,6 @@ public class ChatController {
                 .ok(chatMessageService.countNewMessages(senderId, recipientId));
     }
 
-    /**
-     * Получить соббщения из определенной чат-комнаты
-     * @param senderId Айди отправителя
-     * @param recipientId Айди получателя
-     * @return Хорошо
-     */
     @GetMapping("/messages/{senderId}/{recipientId}")
     public ResponseEntity<?> findChatMessages ( @PathVariable String senderId,
                                                 @PathVariable String recipientId,
@@ -140,11 +115,6 @@ public class ChatController {
         } else return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
     }
 
-    /**
-     * Получить определнное сообщение
-     * @param id Айди сообщения
-     * @return Сообщение
-     */
     @GetMapping("/messages/{id}")
     public ResponseEntity<?> findMessage ( @PathVariable Long id,
                                            @CookieValue("auth") String token) {
@@ -157,4 +127,11 @@ public class ChatController {
                     .ok(chatMessageService.findById(id));
         } else return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
     }
+
+//    @DeleteMapping("/messages/{id}")
+//    public ResponseEntity<?> deleteMessage ( @PathVariable Long id) throws Exception {
+//        chatMessageService.deleteMessage(id);
+//        return ResponseEntity
+//                .ok("Deleted");
+//    }
 }
