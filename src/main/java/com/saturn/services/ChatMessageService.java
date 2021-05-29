@@ -43,14 +43,13 @@ public class ChatMessageService {
         return messages;
     }
 
-    public ChatMessage findById(Long id) {
+    public Optional<ChatMessage> findById(Long id) {
         return chatMessageRepository
                 .findById(id)
                 .map(chatMessage -> {
                     chatMessage.setStatus(MessageStatus.DELIVERED);
                     return chatMessageRepository.save(chatMessage);
-                })
-                .orElseThrow();
+                });
     }
 
     public void deleteMessage(Long id) {

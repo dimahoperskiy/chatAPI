@@ -31,6 +31,12 @@ public class User extends AuditModel {
     private String status;
     private Boolean follow;
 
+    public User(String login, @Email String email, String password) {
+        this.login = login;
+        this.email = email;
+        this.password = password;
+    }
+
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;

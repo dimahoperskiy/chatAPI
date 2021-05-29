@@ -59,39 +59,74 @@ public class ChatController {
 
     @MessageMapping("/chat/delete")
     public void deleteMessage(@Payload DeleteMessage payload) {
-        ChatMessage message = chatMessageService.findById(payload.getId());
-        chatMessageService.deleteMessage(payload.getId());
-        Long recipientId = userService.findByLogin(payload.getRecipient()).getId();
+        Optional<ChatMessage> messageOpt = chatMessageService.findById(payload.getId());
+        if (messageOpt.isPresent()) {
+            ChatMessage message = messageOpt.orElseThrow();
 
-        messagingTemplate.convertAndSendToUser(
-                String.valueOf(recipientId), "queue/messages",
-                new ChatNotification(
-                        message.getId(),
-                        message.getSenderId(),
-                        message.getSenderName(),
-                        true,
-                        false
-                )
-        );
+            chatMessageService.deleteMessage(payload.getId());
+            Long recipientId = userService.findByLogin(payload.getRecipient()).getId();
+
+            messagingTemplate.convertAndSendToUser(
+                    String.valueOf(recipientId), "queue/messages",
+                    new ChatNotification(
+                            message.getId(),
+                            message.getSenderId(),
+                            message.getSenderName(),
+                            true,
+                            false
+                    )
+            );
+        } else {
+            Long recipientId = userService.findByLogin(payload.getRecipient()).getId();
+            messagingTemplate.convertAndSendToUser(
+                    String.valueOf(recipientId), "queue/messages",
+                    new ChatNotification(
+                            null,
+                            null,
+                            null,
+                            false,
+                            false
+                    )
+            );
+            System.out.println("No such message");
+        }
     }
 
     @MessageMapping("/chat/edit")
     public void editMessage(@Payload EditMessage payload) {
 
-        ChatMessage message = chatMessageService.findById(payload.getId());
-        message.setContent(payload.getContent());
-        chatMessageService.save(message);
-        Long recipientId = userService.findByLogin(payload.getRecipient()).getId();
+        Optional<ChatMessage> messageOpt = chatMessageService.findById(payload.getId());
 
-        messagingTemplate.convertAndSendToUser(
-                String.valueOf(recipientId),"queue/messages",
-                new ChatNotification(
-                        message.getId(),
-                        message.getSenderId(),
-                        message.getSenderName(),
-                        false,
-                        true));
+        if (messageOpt.isPresent()) {
+            ChatMessage message = messageOpt.orElseThrow();
 
+            message.setContent(payload.getContent());
+            chatMessageService.save(message);
+            Long recipientId = userService.findByLogin(payload.getRecipient()).getId();
+
+            messagingTemplate.convertAndSendToUser(
+                    String.valueOf(recipientId),"queue/messages",
+                    new ChatNotification(
+                            message.getId(),
+                            message.getSenderId(),
+                            message.getSenderName(),
+                            false,
+                            true));
+
+        } else {
+            Long recipientId = userService.findByLogin(payload.getRecipient()).getId();
+            messagingTemplate.convertAndSendToUser(
+                    String.valueOf(recipientId), "queue/messages",
+                    new ChatNotification(
+                            null,
+                            null,
+                            null,
+                            false,
+                            false
+                    )
+            );
+            System.out.println("No such message");
+        }
     }
 
     @GetMapping("/messages/{senderId}/{recipientId}/count")
@@ -118,14 +153,20 @@ public class ChatController {
     @GetMapping("/messages/{id}")
     public ResponseEntity<?> findMessage ( @PathVariable Long id,
                                            @CookieValue("auth") String token) {
-        ChatMessage msg = chatMessageService.findById(id);
+        Optional<ChatMessage> msgOpt = chatMessageService.findById(id);
 
-        String user =  jwtProvider.getLoginFromToken(token);
+        if (msgOpt.isPresent()) {
+            ChatMessage msg = msgOpt.orElseThrow();
 
-        if (msg.getSenderName().equals(user) || msg.getRecipientName().equals(user)) {
-            return ResponseEntity
-                    .ok(chatMessageService.findById(id));
-        } else return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
+            String user =  jwtProvider.getLoginFromToken(token);
+
+            if (msg.getSenderName().equals(user) || msg.getRecipientName().equals(user)) {
+                return ResponseEntity
+                        .ok(chatMessageService.findById(id));
+            } else return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
+        } else {
+            return new ResponseEntity<>("No such message", HttpStatus.NOT_FOUND);
+        }
     }
 
 //    @DeleteMapping("/messages/{id}")
